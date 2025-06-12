@@ -10,7 +10,7 @@ const AdminDashboard = () => {
 <div className="admin-dashboard">
   <div className="dashboard-container">
     <div className="dashboard-header">
-      <h1>Admin Dashboard</h1>
+      <h1>Project Dashboard</h1>
       <p>Welcome! Choose an action below to manage the system.</p>
     </div>
 

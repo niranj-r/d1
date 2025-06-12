@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
@@ -207,6 +208,39 @@ def update_project(project_id):
     if result.matched_count == 1:
         return jsonify({"message": "Project updated"})
     return jsonify({"error": "Project not found"})
+
+@app.route('/api/projects', methods=['GET'])
+def get_all_projects():
+    projects = list(db.projects.find({}))
+    for proj in projects:
+        proj["_id"] = str(proj["_id"])
+    return jsonify(projects)
+
+
+@app.route('/api/projects', methods=['POST'])
+def create_project():
+    data = request.json
+    name = data.get("name")
+    departmentId = data.get("departmentId")
+    startDate = data.get("startDate")
+    endDate = data.get("endDate")
+    budget = data.get("budget")
+
+    if not name:
+        return jsonify({"error": "Project name is required"}), 400
+
+    project = {
+        "name": name,
+        "departmentId": departmentId,
+        "startDate": startDate,
+        "endDate": endDate,
+        "budget": budget,
+        "createdAt": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')  # ✅ added here
+    }
+
+    result = db.projects.insert_one(project)
+    project["_id"] = str(result.inserted_id)
+    return jsonify(project), 201
 
 @app.route('/api/projects/<project_id>', methods=['GET'])
 def get_project_by_id(project_id):

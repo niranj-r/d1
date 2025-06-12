@@ -43,21 +43,32 @@ const EmployeeDirectory = () => {
   };
 
   const handleAdd = async () => {
-    const name = prompt('Enter name');
-    const email = prompt('Enter email');
-    const phone = prompt('Enter phone number');
-    const joinDate = prompt('Enter join date (YYYY-MM-DD)');
-    if (!name || !email || !phone || !joinDate) return;
+  const name = prompt('Enter project name');
+  const departmentId = prompt('Enter department ID');
+  const startDate = prompt('Enter start date (YYYY-MM-DD)');
+  const endDate = prompt('Enter end date (YYYY-MM-DD)');
+  const budget = prompt('Enter budget');
 
-    try {
-      const res = await axios.post('http://localhost:5000/api/projects', {
-        name, email, phone, joinDate
-      });
-      setProjects(prev => [...prev, res.data]);
-    } catch (err) {
-      console.error('Failed to add project', err);
-    }
-  };
+  if (!name || !departmentId || !startDate || !endDate || !budget) {
+    alert('All fields are required.');
+    return;
+  }
+
+  try {
+    const res = await axios.post('http://localhost:5000/api/projects', {
+      name,
+      departmentId,
+      startDate,
+      endDate,
+      budget
+    });
+    setProjects(prev => [...prev, res.data]);
+  } catch (err) {
+    console.error('Failed to add project', err);
+    alert('Error adding project. See console for details.');
+  }
+};
+
 
   const filteredProjects = projects.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -65,12 +76,7 @@ const EmployeeDirectory = () => {
 
   return (
     <div className="employee-table-container">
-      <div className="table-header">
-        <h2>Project Page</h2>
-        <div className="controls">
-          <span>Page 1 of 1</span>
-        </div>
-      </div>
+     
 
       <div className="table-header">
         <h2>Project Details</h2>
